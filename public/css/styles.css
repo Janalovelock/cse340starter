@@ -38,9 +38,10 @@ header{
   text-align: right;
   position: relative; 
   font-size: 1rem;
+
 }
 #tools a{
-  color: var(--tertiary-color);
+  color: #944000; 
 }
 
  h1, h2, h3{
