@@ -230,4 +230,37 @@ VALUES   (
     5
   );
 
-  
+
+--update--
+UPDATE 
+  inventory
+SET 
+  inv_description = REPLACE(inv_description, 'small interiors', 'a huge interior'
+)
+						   
+WHERE 
+  inv_model = 'Hummer';
+
+--INNER JOIN--
+SELECT 
+inv_make,
+inv_model,
+classification_name
+FROM
+inventory
+INNER JOIN 
+classification 
+ON 
+classification.classification_id = inventory.classification_id
+WHERE 
+classification_name = 'Sport';
+
+--replace path--
+UPDATE 
+  inventory
+SET 
+  inv_image = REPLACE(inv_image, '/images/', '/images/vehicles/'
+),
+inv_thumbnail = REPLACE(inv_thumbnail, '/images/', '/images/vehicles/'
+);
+			
