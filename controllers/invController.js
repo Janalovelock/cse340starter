@@ -18,3 +18,5 @@ invCont.buildByClassificationId = async function (req, res, next) {
     grid,
   })
 }
+
+module.exports = invCont
