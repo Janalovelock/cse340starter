@@ -57,7 +57,29 @@ Util.buildClassificationGrid = async function(data){
     }
     return grid
   }
-
-
+  
+  /* **************************************
+ * Get HTML content for a specific inventory item
+ * ************************************ */
+  Util.generateInventoryItemHTML = async function (itemId) {
+    try {
+        if (itemId) {
+        let htmlContent = `<div>
+                            <h2>${itemId[0].inv_make} ${itemId[0].inv_model}</h2>
+                            <img src="${itemId[0].inv_image}" alt="${itemId[0].inv_make} ${itemId[0].inv_model}">
+                            <p>Year: ${itemId[0].inv_year}</p>
+                            <p>Price: $${new Intl.NumberFormat('en-US').format(itemId[0].inv_price)}</p>
+                            <p>Mileage: ${new Intl.NumberFormat().format(itemId[0].inv_mileage)}</p>
+                            <p>Description: ${itemId[0].inv_description}</p>
+                          </div>`;
+        return htmlContent;
+      } else {
+        return '<p class="notice">Sorry, the requested vehicle could not be found.</p>';
+    }
+} catch (error) {
+    console.error("Error generating HTML for inventory item:", error);
+    return '<p class="error">An error occurred while generating HTML for the inventory item.</p>';
+}
+};
 
 module.exports = Util
