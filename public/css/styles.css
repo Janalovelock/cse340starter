@@ -64,7 +64,9 @@ li{
   list-style-type: none;
   font-family: var(--body-font);
 }
-
+nav a, nav a:link, nav a:visited, nav a:hover, nav a:active {
+  color: var(--accent-color-2)
+}
 nav li{
   margin: auto; 
   padding: 1rem;
@@ -86,7 +88,7 @@ nav{
   flex-wrap: wrap;
 }
 nav ul{
-  display: flex;
+  display: block;
   padding: 0px;
 }
 button{
@@ -155,6 +157,21 @@ button{
   padding: 1rem; 
 
 }
+
+.detail{
+  background-color: var(--tertiary-color);
+  color: #1E3832;
+  padding: 1rem; 
+  margin: 1rem;
+}
+.detail-info{
+  max-width: none;
+}
+.item-details h2{
+  font-size: 2rem; 
+}
+
+
 @media only screen and (min-width: 600px) {
   body{
     max-width: fit-content;
@@ -179,6 +196,29 @@ button{
   margin: 1rem;
   max-width: none;
 }
+.item-info{
 
+  max-width: 80%;
 
+}
+nav ul{
+  display: flex;
+ 
+}
+.item-info{
+  display: grid;;
+  grid-template-columns:1fr 1fr ;
+  max-width: none;
+  margin: auto;
+}
+
+.item-info img{
+  grid-area: 1/1/2/2;
+  margin: auto;
+}
+.detail-info {
+  grid-area: 1/2/2/3;
+  max-width: 80%;
+
+}
 }
