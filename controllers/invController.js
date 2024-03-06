@@ -2,6 +2,16 @@ const invModel = require("../models/inventory-model")
 const utilities = require("../utilities/")
 
 const invCont = {}
+/* ***************************
+ *  build management page
+ * ************************** */
+invCont.renderManagement = async function (req, res, next) {
+  let nav = await utilities.getNav();
+  res.render("./inventory/management", {
+      title: "Inventory Management",
+      nav,
+  });
+};
 
 /* ***************************
  *  Build inventory by classification view
@@ -34,6 +44,19 @@ invCont.getInventoryItemDetail = async function (req, res, next) {
     grid,
   })
 }
+/* ***************************
+ * Render the add-classification view
+ * ************************** */
+invCont.renderAddClassification = async function (req, res, next) {
+  let nav = await utilities.getNav()
+
+    // Your logic to render the add-classification view goes here
+    res.render("./inventory/add-classification", { 
+      title: "Add Classification" ,
+      nav,
+    });
 
 
-module.exports = invCont
+}
+module.exports = invCont;
+

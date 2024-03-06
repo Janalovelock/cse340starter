@@ -1,0 +1,17 @@
+<% if (title) { %>
+    <h1><%= title %></h1>
+    <%- messages() %>
+
+
+
+<form id="addClassificationForm" action="/inventory/add-classification" method="post">
+    <div>
+        <label for="classificationName">Classification Name:</label>
+        <input type="text" id="classificationName" name="classificationName" required pattern="[^\s!@#$%^&*()_+={}|:<>?~`]+">
+
+    </div>
+
+    <span id="classificationNameError" class="error">Classification name cannot contain spaces or special characters.</span></br>
+    <button type="submit">Add Classification</button>
+</form>
+<% } %>
