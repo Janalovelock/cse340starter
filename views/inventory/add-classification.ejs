@@ -8,8 +8,8 @@
             <input type="text" id="classification_name" name="classification_name" required pattern="[A-Za-z0-9]+" value="<%= typeof classification_name !== 'undefined' ? classification_name : '' %>">
         </div>
         <% if (typeof classification_error !== 'undefined' && classification_error !== '') { %>
-            <span><%= classification_error %></span>
-        <% } %>
+            <div class="error-message"><%= classification_error %></div>
+        <% } %><br>
         <span>Classification name may not contain spaces or special characters</span><br>
         <button type="submit">Add Classification</button>
     </form>

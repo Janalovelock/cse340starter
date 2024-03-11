@@ -110,6 +110,14 @@ button{
   padding: 1rem;
 }
 
+.error-message{
+  color:red;
+  font-weight: bold;
+  margin: 1rem; 
+  border: 5px solid red;
+  border-radius: 5px;
+}
+
 .hero-index{
   background-image: url(/images/vehicles/delorean.jpg);
   background-size: contain;

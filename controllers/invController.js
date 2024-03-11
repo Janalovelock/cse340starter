@@ -107,10 +107,11 @@ invCont.addClassification = async function (req, res, next) {
       // If an error occurs during database operation, render the add-classification view with an error message
       console.error("Error adding classification:", error); // Add this console log
       let nav = await utilities.getNav();
-      return res.render('./inventory/add-classification', {
-          title: 'Add Classification',
-          nav,
-          classification_error: 'Failed to add classification. Please ensure classification name only contains alphanumeric characters and no spaces or special characters.'
+      return res.render("./inventory/add-classification", { 
+        title: "Add Classification",
+        nav,
+        classification_name: req.body.classification_name || '', // Use req.body to retain the value
+        classification_error: 'Please try again! Classification name cannot contain spaces or special characters!' // Include classification_error here
       });
   }
 };
