@@ -1,7 +1,7 @@
 <% if (title) { %>
     <h1><%= title %></h1>
     <%- messages() %>
-    <form id="add-inventory-form" action="/add-inventory" method="post">
+    <form id="add-inventory-form" action="/inv/add-inventory" method="post">
         <!-- Input fields for vehicle details -->
         <label for="make">Make:</label>
         <input type="text" id="make" name="inv_make" required><br>

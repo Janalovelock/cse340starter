@@ -19,6 +19,9 @@ const pool = require('./database/')
 const bodyParser = require("body-parser")
 const accountController = require("./controllers/accountController");
 const { registerAccount } = require("./models/account-model")
+const { addClassification } = require("./models/inventory-model")
+const { addInventoryItem}  = require("./models/inventory-model")
+
 
 
 
@@ -68,8 +71,11 @@ app.get("/", baseController.buildHome)
 
 app.use("/inv", inventoryRoute)
 // Account routes
-app.use("/account", require("./routes/accountRoute"))
+app.use("/account", require("./routes/accountRoute"));
 app.use("/account", registerAccount); 
+app.use("/inv/add-classification", addClassification);
+app.use("/inv/add-inventory", addInventoryItem);
+
 
 // Error handling middleware
 app.use(async (err, req, res, next) => {

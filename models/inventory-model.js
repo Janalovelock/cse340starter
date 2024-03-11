@@ -55,7 +55,10 @@ async function addClassification(classification_name) {
 
     return result.rows[0];
   } catch (error) {
-    console.error('Error adding classification:', error);
+    // Log error details
+    console.error('Error adding classification:', error.message); // Log the error message
+    console.error('Error details:', error); // Log the entire error object
+
     throw new Error('Error adding classification');
   }
 }
@@ -67,7 +70,7 @@ async function addInventoryItem(inv_make, inv_model, inv_year, inv_description, 
   try {
     // Construct SQL query to insert inventory item
     const query = `
-      INSERT INTO inventory (inv_make, inv_model, inv_year, inv_description, inv_image, inv_thumbnail, inv_price, inv_miles, inv_color, classification_id)
+      INSERT INTO public.inventory (inv_make, inv_model, inv_year, inv_description, inv_image, inv_thumbnail, inv_price, inv_miles, inv_color, classification_id)
       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
       RETURNING *;
     `;

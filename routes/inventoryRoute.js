@@ -13,10 +13,15 @@ router.get("/type/:classificationId", invController.buildByClassificationId);
 router.get("/detail/:itemId", invController.getInventoryItemDetail);
 router.get('/trigger-error', errorController.triggerError);
 router.get("/add-classification", invController.renderAddClassification);
+router.post('/add-classification', invController.addClassification);
 router.get('/add-inventory', invController.renderAddInventory);
-router.post('/inv/add-classification', invController.addClassification);
-router.post("/add-inventory", invController.addInventoryItem);
+router.post('/add-inventory', invController.addInventoryItem);
 //accountValidation.checkAddClassification, 
+
+// Define your inventory routes
+// Route to render the add classification page
+
+//routes for adding inventory
 
 
 
