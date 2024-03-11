@@ -2,14 +2,15 @@
     <h1><%= title %></h1>
     <%- messages() %>
 
-    
-
     <form id="addClassificationForm" action="/inv/add-classification" method="post">
         <div>
             <label for="classification_name">Classification Name:</label>
-            <input type="text" id="classification_name" name="classification_name" required pattern="[A-Za-z0-9]+">
+            <input type="text" id="classification_name" name="classification_name" required pattern="[A-Za-z0-9]+" value="<%= typeof classification_name !== 'undefined' ? classification_name : '' %>">
         </div>
-        <span>Spaces and special characters are not allowed</span><br>
+        <% if (typeof classification_error !== 'undefined' && classification_error !== '') { %>
+            <span><%= classification_error %></span>
+        <% } %>
+        <span>Classification name may not contain spaces or special characters</span><br>
         <button type="submit">Add Classification</button>
     </form>
-    <% } %>
+<% } %>

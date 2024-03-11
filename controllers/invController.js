@@ -63,62 +63,54 @@ invCont.getInventoryItemDetail = async function (req, res, next) {
     grid,
   })
 }
-/* ***************************
- * Render the add-classification view
- * ************************** */
+/* Render the add-classification view */
 invCont.renderAddClassification = async function (req, res, next) {
-  let nav = await utilities.getNav()
-  //const classificationName = req.body
-
-    // Your logic to render the add-classification view goes here
-    //const data = await invModel.addClassification(classificationName)
-
+  try {
+    let nav = await utilities.getNav();
+    // Pass classification_name and classification_error variables
     res.render("./inventory/add-classification", { 
       title: "Add Classification" ,
       nav,
+      classification_name: req.query.classification_name || '', // Use req.query instead of req.body
+      classification_error: req.body.classification_error // Include classification_error here
     });
-  
-
-
+  } catch (error) {
+    console.error("Error rendering add-classification view:", error);
+    next(error);
+  }
 }
-
 /* ***************************
  * Add new classification function
  * ************************** */
+/* Add new classification function */
 invCont.addClassification = async function (req, res, next) {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-      // If validation fails, render the add-classification view with error messages
-      let nav = await utilities.getNav();
-      return res.render('./inventory/add-classification', {
-          title: 'Add Classification',
-          nav,
-          errors: errors.array()
-      });
+      // If validation fails, set classification_name and classification_error variables
+      req.query.classification_name = req.body.classification_name;
+      req.body.classification_error = 'Classification name can only contain alphanumeric characters'; // Set classification_error here
+      // Redirect back to the add-classification page with the classification name in the query parameter
+      return res.redirect(`/inv/add-classification?classification_name=${encodeURIComponent(req.body.classification_name)}`);
   }
-
   // If validation passes, insert the new classification into the database
   try {
       // Retrieve classification name from request body
       const { classification_name } = req.body;
       console.log("Adding classification:", classification_name); // Add this console log
-
       // Insert classification into the database
       const data = await invModel.addClassification(classification_name);
       console.log("Classification added successfully:", data); // Add this console log
-
       // Redirect to the management page with a success message
       req.flash('success', 'Classification added successfully.');
       res.redirect('/inv');
   } catch (error) {
       // If an error occurs during database operation, render the add-classification view with an error message
       console.error("Error adding classification:", error); // Add this console log
-
       let nav = await utilities.getNav();
       return res.render('./inventory/add-classification', {
           title: 'Add Classification',
           nav,
-          errors: [{ msg: 'Failed to add classification. Please try again later.' }]
+          classification_error: 'Failed to add classification. Please ensure classification name only contains alphanumeric characters and no spaces or special characters.'
       });
   }
 };

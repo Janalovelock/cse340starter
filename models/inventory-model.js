@@ -44,6 +44,12 @@ add Classification
  * ************************** */
 async function addClassification(classification_name) {
   try {
+    // Validate classification_name
+    const isValid = /^[a-zA-Z0-9]+$/.test(classification_name);
+    if (!isValid) {
+      throw new Error('Classification name can only contain alphanumeric characters');
+    }
+
     // Log the SQL query and parameters before executing
     console.log('SQL Query:', 'INSERT INTO public.classification (classification_name) VALUES ($1) RETURNING *', 'Parameters:', [classification_name]);
 
