@@ -67,8 +67,8 @@ Util.buildClassificationGrid = async function (data) {
         vehicle.inv_make +
         " " +
         vehicle.inv_model +
-        ' on CSE Motors" /></a>';
-      grid += "<hr />";
+        ' on CSE Motors"></a>';
+      grid += "<hr>";
       grid += "</li>";
     });
     grid += "</ul>";
@@ -111,5 +111,6 @@ Util.generateInventoryItemHTML = async function (itemId) {
  * General Error Handling
  **************************************** */
 Util.handleErrors = fn => (req, res, next) => Promise.resolve(fn(req, res, next)).catch(next)
+
 
 module.exports = Util;
