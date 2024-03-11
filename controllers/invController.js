@@ -134,7 +134,9 @@ invCont.renderAddInventory = async function (req, res, next) {
     const classificationsData = await invModel.getClassifications();
     let classificationDropdown = "<select id='classification' name='classification' required>";
     classificationDropdown += "<option value=''>Select a Classification</option>";
-    classificationsData.forEach((row) => { // Remove .rows from classificationsData
+
+    // Use classificationsData.rows instead of classificationsData
+    classificationsData.rows.forEach((row) => {
       classificationDropdown += `
         <option value="${row.classification_id}">${row.classification_name}</option>
       `;
@@ -145,8 +147,7 @@ invCont.renderAddInventory = async function (req, res, next) {
     res.render("./inventory/add-inventory", {
       title: "Add Inventory",
       nav,
-      classificationDropdown: classificationDropdown, // Pass the classificationDropdown variable
-      classificationsData
+      classificationDropdown: classificationDropdown,
     });
   } catch (error) {
     console.error("Error rendering add-inventory view:", error);
