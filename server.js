@@ -73,8 +73,8 @@ app.use("/inv", inventoryRoute)
 // Account routes
 app.use("/account", require("./routes/accountRoute"));
 app.use("/account", registerAccount); 
-app.use("/inv/add-classification", addClassification);
-app.use("/inv/add-inventory", addInventoryItem);
+//app.use("/inv/add-classification", addClassification);
+//app.use("/inv/add-inventory", addInventoryItem);
 
 
 // Error handling middleware

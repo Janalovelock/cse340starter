@@ -1,6 +1,7 @@
 <% if (title) { %>
     <h1><%= title %></h1>
     <%- messages() %>
+    <%- console.log(classificationDropdown) %>
     <form id="add-inventory-form" action="/inv/add-inventory" method="post">
         <!-- Input fields for vehicle details -->
         <label for="make">Make:</label>
@@ -29,10 +30,10 @@
         <%- classificationDropdown %><br>
         
         <label for="image">Image:</label>
-        <input type="text" id="image" name="image" required><br>
+        <input type="text" id="image" name="inv_image" required><br>
         
         <label for="thumbnail">Thumbnail:</label>
-        <input type="text" id="thumbnail" name="thumbnail" required><br>
+        <input type="text" id="thumbnail" name="inv_thumbnail" required><br>
         
         <!-- Submit button -->
         <button type="submit">Add Vehicle</button>

@@ -125,14 +125,13 @@ invCont.addClassification = async function (req, res, next) {
 /* ***************************
  * Render the add-inventory view
  * ************************** */
-
 invCont.renderAddInventory = async function (req, res, next) {
   try {
     let nav = await utilities.getNav();
 
     // Fetch all classifications and construct dropdown HTML
     const classificationsData = await invModel.getClassifications();
-    let classificationDropdown = "<select id='classification' name='classification' required>";
+    let classificationDropdown = "<select id='classification' name='classification_id' required>";
     classificationDropdown += "<option value=''>Select a Classification</option>";
 
     // Use classificationsData.rows instead of classificationsData
