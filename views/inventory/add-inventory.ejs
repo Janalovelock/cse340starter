@@ -1,41 +1,78 @@
 <% if (title) { %>
     <h1><%= title %></h1>
-    <%- messages() %>
-    <%- console.log(classificationDropdown) %>
+    <% if (errors && errors.length > 0) { %>
+        <div class="error-message">
+            <% errors.forEach(error => { %>
+                <p><%= error.msg %></p>
+            <% }); %>
+        </div>
+    <% } %>
     <form id="add-inventory-form" action="/inv/add-inventory" method="post">
         <!-- Input fields for vehicle details -->
         <label for="make">Make:</label>
-        <input type="text" id="make" name="inv_make" required><br>
-        
+        <input type="text" id="make" name="inv_make" required value="<%= formData ? formData.inv_make : '' %>"><br>
+        <% if (errors && errors.find(error => error.param === 'inv_make')) { %>
+            <p class="error-message"><%- errors.find(error => error.param === 'inv_make').msg %></p>
+        <% } %>
+
         <label for="model">Model:</label>
-        <input type="text" id="model" name="inv_model" required><br>
-        
+        <input type="text" id="model" name="inv_model" required value="<%= formData ? formData.inv_model : '' %>"><br>
+        <% if (errors && errors.find(error => error.param === 'inv_model')) { %>
+            <p class="error-message"><%- errors.find(error => error.param === 'inv_model').msg %></p>
+        <% } %>
+
         <label for="year">Year:</label>
-        <input type="number" id="year" name="inv_year" required><br>
+        <input type="number" id="year" name="inv_year" required value="<%= formData ? formData.inv_year : '' %>"><br>
+        <% if (errors && errors.find(error => error.param === 'inv_year')) { %>
+            <p class="error-message"><%- errors.find(error => error.param === 'inv_year').msg %></p>
+        <% } %>
         
         <label for="description">Description:</label><br>
-        <textarea id="description" name="inv_description" rows="4" cols="50" required></textarea><br>
+        <textarea id="description" name="inv_description" rows="4" cols="50" required><%= formData ? formData.inv_description : '' %></textarea><br>
+        <% if (errors && errors.find(error => error.param === 'inv_description')) { %>
+            <p class="error-message"><%- errors.find(error => error.param === 'inv_description').msg %></p>
+        <% } %>
         
         <label for="price">Price:</label>
-        <input type="number" id="price" name="inv_price" required><br>
+        <input type="number" id="price" name="inv_price" required value="<%= formData ? formData.inv_price : '' %>"><br>
+        <% if (errors && errors.find(error => error.param === 'inv_price')) { %>
+            <p class="error-message"><%= errors.find(error => error.param === 'inv_price').msg %></p>
+        <% } %>
         
         <label for="miles">Miles:</label>
-        <input type="number" id="miles" name="inv_miles" required><br>
+        <input type="number" id="miles" name="inv_miles" required value="<%= formData ? formData.inv_miles : '' %>"><br>
+        <% if (errors && errors.find(error => error.param === 'inv_miles')) { %>
+            <p class="error-message"><%= errors.find(error => error.param === 'inv_miles').msg %></p>
+        <% } %>
         
         <label for="color">Color:</label>
-        <input type="text" id="color" name="inv_color" required><br>
+        <input type="text" id="color" name="inv_color" required value="<%= formData ? formData.inv_color : '' %>"><br>
+        <% if (errors && errors.find(error => error.param === 'inv_color')) { %>
+            <p class="error-message"><%= errors.find(error => error.param === 'inv_color').msg %></p>
+        <% } %>
         
         <!-- Dropdown for classification -->
         <label for="classification">Classification:</label> 
         <%- classificationDropdown %><br>
+        <% if (errors && errors.find(error => error.param === 'classification_id')) { %>
+            <p class="error-message"><%= errors.find(error => error.param === 'classification_id').msg %></p>
+        <% } %>
         
         <label for="image">Image:</label>
-        <input type="text" id="image" name="inv_image" required><br>
-        
+        <input type="text" id="image" name="inv_image" required value="<%= formData ? formData.inv_image : '' %>"><br>
+        <% if (errors && errors.find(error => error.param === 'inv_image')) { %>
+            <p class="error-message"><%- errors.find(error => error.param === 'inv_image').msg %></p>
+        <% } %>
+
         <label for="thumbnail">Thumbnail:</label>
-        <input type="text" id="thumbnail" name="inv_thumbnail" required><br>
-        
+        <input type="text" id="thumbnail" name="inv_thumbnail" required value="<%= formData ? formData.inv_thumbnail : '' %>"><br>
+        <% if (errors && errors.find(error => error.param === 'inv_thumbnail')) { %>
+            <p class="error-message"><%- errors.find(error => error.param === 'inv_thumbnail').msg %></p>
+        <% } %>
+
+
         <!-- Submit button -->
         <button type="submit">Add Vehicle</button>
     </form>
+
 <% } %>

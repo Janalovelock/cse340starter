@@ -1,8 +1,9 @@
 const invModel = require("../models/inventory-model")
 const utilities = require("../utilities/")
-const { validationResult } = require('express-validator');
+const { check, validationResult } = require('express-validator');
 const accountValidation = require('../utilities/account-validation');
 const express = require('express');
+const { checkExistingEmail } = require("../models/account-model");
 const router = express.Router();
 
 const invCont = {}
@@ -71,8 +72,8 @@ invCont.renderAddClassification = async function (req, res, next) {
     res.render("./inventory/add-classification", { 
       title: "Add Classification" ,
       nav,
-      classification_name: req.query.classification_name || '', // Use req.query instead of req.body
-      classification_error: req.body.classification_error // Include classification_error here
+      classification_name: req.query.classification_name || '', 
+      classification_error: req.body.classification_error 
     });
   } catch (error) {
     console.error("Error rendering add-classification view:", error);
@@ -129,17 +130,22 @@ invCont.renderAddInventory = async function (req, res, next) {
 
     // Use classificationsData.rows instead of classificationsData
     classificationsData.rows.forEach((row) => {
-      classificationDropdown += `
-        <option value="${row.classification_id}">${row.classification_name}</option>
-      `;
+        classificationDropdown += `
+            <option value="${row.classification_id}">${row.classification_name}</option>
+        `;
     });
     classificationDropdown += "</select>";
 
+    // Log the classificationDropdown to check its content
+    console.log("Classification Dropdown:", classificationDropdown);
+
     // Render the add-inventory view and pass the dropdown HTML
     res.render("./inventory/add-inventory", {
-      title: "Add Inventory",
-      nav,
-      classificationDropdown: classificationDropdown,
+        title: "Add Inventory",
+        nav,
+        classificationDropdown: classificationDropdown, // Pass classificationDropdown to the view
+        errors: req.flash('error'), // Assuming you're using flash messages for errors
+        formData: {} // Initialize formData object to avoid the "undefined" error
     });
   } catch (error) {
     console.error("Error rendering add-inventory view:", error);
@@ -149,31 +155,73 @@ invCont.renderAddInventory = async function (req, res, next) {
 /* ***************************
  *Add new inventory item function
  * ************************** */
-invCont.addInventoryItem = async function (req, res, next) {
- const errors = validationResult(req);
- if (!errors.isEmpty()) {
-   let nav = await utilities.getNav();
-   return res.render('./inventory/add-inventory', {
-     title: 'Add Inventory',
-     nav,
-     errors: errors.array()
-   });
- }
 
- try {
-   const { inv_make, inv_model, inv_year, inv_description, inv_image, inv_thumbnail, inv_price, inv_miles, inv_color, classification_id } = req.body;
-   const newItem = await invModel.addInventoryItem(inv_make, inv_model, inv_year, inv_description, inv_image, inv_thumbnail, inv_price, inv_miles, inv_color, classification_id);
-   req.flash('success', 'Inventory item added successfully.');
-   res.redirect('/inv');
- } catch (error) {
-   console.error("Error adding inventory item:", error);
-   let nav = await utilities.getNav();
-   return res.render('./inventory/add-inventory', {
-     title: 'Add Inventory',
-     nav,
-     errors: [{ msg: 'Failed to add inventory item. Please try again later.' }]
-   });
- }
+
+ // Add server-side validation logic to the addInventoryItem function
+ invCont.addInventoryItem = async function (req, res, next) {
+  try {
+    // Fetch all classifications and construct dropdown HTML
+    const classificationsData = await invModel.getClassifications();
+    let classificationDropdown = "<select id='classification' name='classification_id' required>";
+    classificationDropdown += "<option value=''>Select a Classification</option>";
+
+    // Use classificationsData.rows instead of classificationsData
+    classificationsData.rows.forEach((row) => {
+        classificationDropdown += `
+            <option value="${row.classification_id}">${row.classification_name}</option>
+        `;
+    });
+    classificationDropdown += "</select>";
+
+    // Log the classificationDropdown to check its content
+    console.log("Classification Dropdown:", classificationDropdown);
+
+    // Validate input fields
+    const validationRules = [
+        check('inv_make').trim().notEmpty().withMessage('Make is required'),
+        check('inv_model').trim().notEmpty().withMessage('Model is required'),
+        check('inv_year').trim().notEmpty().withMessage('Year is required').isInt({ min: 1900, max: new Date().getFullYear() }).withMessage('Invalid year'),
+        check('inv_description').trim().notEmpty().withMessage('Description is required'),
+        check('inv_price').trim().notEmpty().withMessage('Price is required'),
+        check('inv_miles').trim().notEmpty().withMessage('Miles is required'),
+        check('inv_color').trim().notEmpty().withMessage('Color is required'),
+        check('inv_image').trim().notEmpty().withMessage('Image is required'),
+        check('inv_thumbnail').trim().notEmpty().withMessage('Thumbnail is required'),
+        check('classification_id').trim().notEmpty().withMessage('Classification ID is required'),
+    ];
+    await Promise.all(validationRules.map(validation => validation.run(req)));
+
+    const errors = validationResult(req);
+    console.log("Validation Errors:", errors.array()); // Log validation errors
+
+    if (!errors.isEmpty()) {
+        // If validation fails, render the add-inventory view with error messages and previously entered data
+        let nav = await utilities.getNav();
+        return res.render('./inventory/add-inventory', {
+            title: 'Add Inventory',
+            nav,
+            classificationDropdown: classificationDropdown, // Pass classificationDropdown to the view
+            errors: errors.array(), // Pass validation errors to the view
+            formData: req.body // Pass the previously entered data to the view
+        });
+    }
+
+    // If validation passes, proceed with adding the inventory item
+    const { inv_make, inv_model, inv_year, inv_description, inv_image, inv_thumbnail, inv_price, inv_miles, inv_color, classification_id } = req.body;
+    const newItem = await invModel.addInventoryItem(inv_make, inv_model, inv_year, inv_description, inv_image, inv_thumbnail, inv_price, inv_miles, inv_color, classification_id);
+    req.flash('success', 'Inventory item added successfully.');
+    res.redirect('/inv');
+  } catch (error) {
+      console.error("Error adding inventory item:", error);
+      let nav = await utilities.getNav();
+      res.render("./inventory/add-inventory", {
+        title: "Add Inventory",
+        nav,
+        classificationDropdown: classificationDropdown, // Pass classificationDropdown to the view
+        errors: req.flash('error'), // Assuming you're using flash messages for errors
+        formData: {} // Initialize formData object to avoid the "undefined" error
+    });
+  }
 };
 
 module.exports = invCont;
