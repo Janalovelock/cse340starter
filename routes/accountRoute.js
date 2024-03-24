@@ -2,14 +2,34 @@ const express = require("express");
 const router = new express.Router();
 const accountController = require("../controllers/accountController");
 const errorController = require("../controllers/errorController");
-const utilities = require("../utilities")
-const regValidate = require('../utilities/account-validation')
+const utilities = require("../utilities");
+const regValidate = require('../utilities/account-validation');
+
+
+
+// Apply the checkJWTToken middleware to all routes in this router
+
+
+
 
 // GET route for the "My Account" link
+router.get("/", utilities.checkLogin, async (req, res, next) => {
+    try {
+      const nav = await utilities.getNav(req, res, next);
+      // Render the 'account-management' view
+      res.render('account/account-management', { loggedIn: res.locals.loggedIn, nav });
+    } catch (error) {
+      next(error);
+    }
+});
+router.get("/account-management", accountController.buildAccountManagement);
+
 router.get("/login", utilities.handleErrors(accountController.buildLogin));
 router.get("/register", utilities.handleErrors(accountController.buildRegister));
 router.get('/trigger-error', errorController.triggerError);
-router.post('/register', utilities.handleErrors(accountController.registerAccount))
+
+// Logout route
+router.get("/logout", accountController.logout);
 
 // Process the registration data
 router.post(
@@ -17,14 +37,14 @@ router.post(
     regValidate.registationRules(),
     regValidate.checkRegData,
     utilities.handleErrors(accountController.registerAccount)
-  )
+);
 
-  // Process the login attempt
+// Process the login attempt
 router.post(
     "/login",
-    (req, res) => {
-      res.status(200).send('login process')
-    }
-  )
+    regValidate.loginRules(),
+    regValidate.checkLoginData,
+    utilities.handleErrors(accountController.accountLogin)
+);
 
 module.exports = router;

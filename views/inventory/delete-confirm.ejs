@@ -1,0 +1,29 @@
+<% if (title && itemData) { %>
+    <h1><%= title %></h1>
+    <% if (errors && errors.length > 0) { %>
+    <div class="error-message">
+      <% errors.forEach(error => { %>
+      <p><%= error.msg %></p>
+      <% }); %>
+    </div>
+    <% } %>
+    <p>Confirm Deletion - The delete is permanent.</p>
+    <form id="deleteForm" action="/inv/delete/<%= itemData.inv_id %>" method="post">
+        <!-- Input fields for vehicle details -->
+        <label for="make">Make:</label>
+        <input type="text" id="make" name="inv_make" required value="<%= formData ? formData.inv_make : itemData.inv_make %>" readonly><br>
+    
+        <label for="model">Model:</label>
+        <input type="text" id="model" name="inv_model" required value="<%= formData ? formData.inv_model : itemData.inv_model %>" readonly><br>
+    
+        <label for="year">Year:</label>
+        <input type="number" id="year" name="inv_year" required value="<%= formData ? formData.inv_year : itemData.inv_year %>" readonly><br>
+                
+        <label for="price">Price:</label>
+        <input type="number" id="price" name="inv_price" required value="<%= formData ? formData.inv_price : itemData.inv_price %>" readonly><br>
+        
+        <!-- Submit button -->
+        <button type="submit">Delete</button>
+        <input type="hidden" name="inv_id" value="<%= itemData.inv_id %>">
+    </form>
+<% } %>

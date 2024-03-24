@@ -33,9 +33,9 @@ async function getInventoryItemDetail(itemId) {
       `SELECT * FROM inventory WHERE inv_id = $1`,
       [itemId]
     )
-    return data.rows
+    return data.rows[0];
   } catch (error) {
-    console.error("getclassificationsbyid error " + error)
+    console.error("Error fetching inventory item:" + error)
     throw new Error("Error fetching inventory item");
   }
 }
@@ -92,5 +92,52 @@ async function addInventoryItem(inv_make, inv_model, inv_year, inv_description, 
   }
 }
 
+/* ***************************
+Update inventory item
+ * ************************** */
 
-module.exports = {getClassifications, getInventoryByClassificationId, getInventoryItemDetail, addClassification, addInventoryItem};
+async function updateInventoryItem(inv_id, inv_make, inv_model, inv_year, inv_description, inv_image, inv_thumbnail, inv_price, inv_miles, inv_color, classification_id) {
+  try {
+    // Construct SQL query to update inventory item
+    const query = `
+      UPDATE public.inventory 
+      SET inv_make = $1, inv_model = $2, inv_description = $3, inv_image = $4, inv_thumbnail = $5, inv_price = $6, inv_year = $7, inv_miles = $8, inv_color = $9, classification_id = $10 
+      WHERE inv_id = $11 
+      RETURNING *;
+    `;
+
+    // Execute SQL query with parameters
+    const result = await pool.query(query, [inv_make, inv_model, inv_description, inv_image, inv_thumbnail, inv_price, inv_year, inv_miles, inv_color, classification_id, inv_id]);
+
+    // Return the updated inventory item
+    return result.rows[0];
+  } catch (error) {
+    // Handle database errors
+    throw new Error("Error updating inventory item: " + error.message);
+  }
+}
+
+
+/* ***************************
+Delete inventory item
+ * ************************** */
+
+async function deleteInventoryItem(inv_id) {
+  try {
+    // Construct SQL query to update inventory item
+    const query = `
+      DELETE FROM inventory WHERE inv_id = $1
+    `;
+
+    // Execute SQL query with parameters
+    await pool.query(query, [inv_id]);
+
+
+  } catch (error) {
+    // Handle database errors
+    throw new Error("Error deleting inventory item: " + error.message);
+  }
+}
+
+
+module.exports = {getClassifications, getInventoryByClassificationId, getInventoryItemDetail, addClassification, addInventoryItem, updateInventoryItem, deleteInventoryItem};

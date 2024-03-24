@@ -1,5 +1,7 @@
 const invModel = require("../models/inventory-model");
 const Util = {};
+const jwt = require("jsonwebtoken")
+require("dotenv").config()
 
 /* ************************
  * Constructs the nav HTML unordered list
@@ -110,7 +112,23 @@ Util.generateInventoryItemHTML = async function (itemId) {
  * Wrap other function in this for 
  * General Error Handling
  **************************************** */
-Util.handleErrors = fn => (req, res, next) => Promise.resolve(fn(req, res, next)).catch(next)
-
+Util.handleErrors = fn => (req, res, next) => {
+  return Promise.resolve(fn(req, res, next))
+    .catch(error => {
+      console.error('Error caught in handleErrors middleware:', error);
+      next(error); // Forward the error to the next error handling middleware
+    });
+};
+/* ****************************************
+ *  Check Login
+ * ************************************ */
+Util.checkLogin = (req, res, next) => {
+  if (res.locals.loggedIn) {
+    next()
+  } else {
+    req.flash("notice", "Please log in.")
+    return res.redirect("/account/login")
+  }
+ }
 
 module.exports = Util;
