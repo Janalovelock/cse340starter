@@ -120,15 +120,19 @@ Util.handleErrors = fn => (req, res, next) => {
     });
 };
 /* ****************************************
- *  Check Login
+ *  Check Login Middleware
  * ************************************ */
 Util.checkLogin = (req, res, next) => {
+  console.log("Inside checkLogin middleware");
+  
   if (res.locals.loggedIn) {
-    next()
+    console.log("User is logged in");
+    next();
   } else {
-    req.flash("notice", "Please log in.")
-    return res.redirect("/account/login")
+    console.log("User is not logged in");
+    req.flash("notice", "Please log in.");
+    return res.redirect("/account/login");
   }
- }
+};
 
 module.exports = Util;

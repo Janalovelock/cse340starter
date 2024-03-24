@@ -21,6 +21,7 @@ const cookieParser = require("cookie-parser");
 const accountController = require("./controllers/accountController");
 const { registerAccount } = require("./models/account-model")
 const jwt = require('jsonwebtoken')
+const Util = require('./utilities/index')
 //const { addClassification } = require("./models/inventory-model")
 //const { addInventoryItem}  = require("./models/inventory-model")
 // Set up session and body parser middleware
@@ -28,6 +29,7 @@ const jwt = require('jsonwebtoken')
 /* ***********************
  * Middleware
  * ************************/
+
 app.use(session({
   store: new (require('connect-pg-simple')(session))({
     createTableIfMissing: true,

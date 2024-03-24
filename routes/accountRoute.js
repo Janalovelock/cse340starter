@@ -13,15 +13,8 @@ const regValidate = require('../utilities/account-validation');
 
 
 // GET route for the "My Account" link
-router.get("/", utilities.checkLogin, async (req, res, next) => {
-    try {
-      const nav = await utilities.getNav(req, res, next);
-      // Render the 'account-management' view
-      res.render('account/account-management', { loggedIn: res.locals.loggedIn, nav });
-    } catch (error) {
-      next(error);
-    }
-});
+router.get("/", utilities.checkLogin, utilities.handleErrors(accountController.buildAccountManagement))
+
 router.get("/account-management", accountController.buildAccountManagement);
 
 router.get("/login", utilities.handleErrors(accountController.buildLogin));

@@ -15,9 +15,12 @@ router.get("/type/:classificationId", utilities.handleErrors(invController.build
 router.get("/detail/:itemId", utilities.handleErrors(invController.getInventoryItemDetail));
 router.get('/trigger-error', errorController.triggerError);
 router.get("/getInventory/:classification_id", utilities.handleErrors(invController.getInventoryJSON))
+router.use(utilities.checkLogin);
 
 //The following require an admin or employee account to complete
-router.get("/", utilities.handleErrors( invController.renderManagement));
+router.get("/", utilities.handleErrors(invController.renderManagement));
+
+
 
 router.get("/add-classification", utilities.handleErrors(invController.renderAddClassification));
 router.post('/add-classification', utilities.handleErrors(invController.addClassification));

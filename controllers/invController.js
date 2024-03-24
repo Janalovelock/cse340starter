@@ -10,25 +10,31 @@ const invCont = {}
 /* ***************************
  *  build management page
  * ************************** */
+
 invCont.renderManagement = async function (req, res, next) {
-  let nav = await utilities.getNav();
-  const classificationsData = await invModel.getClassifications();
-  let classificationDropdown = "<select id='classificationList' name='classification_id' required>";
-  classificationDropdown += "<option value=''>Select a Classification</option>";
+  try {
+    let nav = await utilities.getNav();
+    const classificationsData = await invModel.getClassifications();
+    let classificationDropdown = "<select id='classificationList' name='classification_id' required>";
+    classificationDropdown += "<option value=''>Select a Classification</option>";
 
-  // Use classificationsData.rows instead of classificationsData
-  classificationsData.rows.forEach((row) => {
-      classificationDropdown += `
-          <option value="${row.classification_id}">${row.classification_name}</option>
-      `;
-  });
-  classificationDropdown += "</select>";
+    classificationsData.rows.forEach((row) => {
+        classificationDropdown += `
+            <option value="${row.classification_id}">${row.classification_name}</option>
+        `;
+    });
+    classificationDropdown += "</select>";
 
-  res.render("./inventory/management", {
-      title: "Inventory Management",
-      nav,
-      classificationDropdown: classificationDropdown,
-  });
+    res.render("./inventory/management", {
+        title: "Inventory Management",
+        nav,
+        loggedIn: res.locals.loggedIn, // Access loggedIn from res.locals
+        classificationDropdown: classificationDropdown,
+    });
+  } catch (error) {
+    console.error("Error rendering management page:", error);
+    next(error);
+  }
 };
 
 /* ***************************

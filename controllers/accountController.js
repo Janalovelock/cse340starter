@@ -39,6 +39,7 @@ async function buildAccountManagement(req, res, next) {
     title: "Account Management",
     nav,
     errors: null,
+
   })
 }
 
@@ -94,14 +95,14 @@ try {
 /* ****************************************
  *  Process login request
  * ************************************ */
-async function accountLogin(req, res) {
+const accountLogin = async (req, res) => {
   console.log("Inside accountLogin function");
 
   const { account_email, account_password } = req.body;
 
   try {
     const accountData = await accountModel.getAccountByEmail(account_email);
-
+    console.log("Retrieved accountData:", accountData);
     if (!accountData) {
       console.log("No account found");
       req.flash("notice", "Please check your credentials and try again.");
@@ -113,8 +114,13 @@ async function accountLogin(req, res) {
     if (isPasswordValid) {
       console.log("Password is correct");
 
+      // Include user's role in the JWT token payload
       const token = jwt.sign(
-        { account_email: accountData.account_email, account_type: accountData.account_type },
+        { 
+          account_email: accountData.account_email, 
+          account_type: accountData.account_type,
+          // Assuming account_type represents the user's role
+        },
         process.env.ACCESS_TOKEN_SECRET,
         { expiresIn: '1h' }
       );
