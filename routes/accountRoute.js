@@ -5,22 +5,13 @@ const errorController = require("../controllers/errorController");
 const utilities = require("../utilities");
 const regValidate = require('../utilities/account-validation');
 
-
-
-// Apply the checkJWTToken middleware to all routes in this router
-
-
-
-
 // GET route for the "My Account" link
-router.get("/", utilities.checkLogin, utilities.handleErrors(accountController.buildAccountManagement))
+router.get("/",  utilities.handleErrors(accountController.buildAccountManagement));
 
-router.get("/account-management", accountController.buildAccountManagement);
-
+// Define the login and register routes
 router.get("/login", utilities.handleErrors(accountController.buildLogin));
 router.get("/register", utilities.handleErrors(accountController.buildRegister));
-router.get('/trigger-error', errorController.triggerError);
-
+router.get("/account-management", utilities.handleErrors(accountController.buildAccountManagement))
 // Logout route
 router.get("/logout", accountController.logout);
 

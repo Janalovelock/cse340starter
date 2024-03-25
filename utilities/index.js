@@ -126,10 +126,10 @@ Util.checkLogin = (req, res, next) => {
   console.log("Inside checkLogin middleware");
   
   if (res.locals.loggedIn) {
-    console.log("User is logged in");
+    console.log("index.js says User is logged in");
     next();
   } else {
-    console.log("User is not logged in");
+    console.log("index.js says User is not logged in");
     req.flash("notice", "Please log in.");
     return res.redirect("/account/login");
   }

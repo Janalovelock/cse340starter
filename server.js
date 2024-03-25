@@ -50,8 +50,14 @@ app.use(function(req, res, next){
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
 
-// Middleware to check if user is logged in
+//Middleware to check if user is logged in
 app.use((req, res, next) => {
+  // Initialize loggedIn as false
+  res.locals.loggedIn = false;
+
+  // Log that the middleware is being executed
+  console.log('Middleware to check if user is logged in is being executed from server.js');
+
   // Check if req.cookies exists and if req.cookies.jwt is truthy
   if (req.cookies && req.cookies.jwt) {
     try {
@@ -60,19 +66,26 @@ app.use((req, res, next) => {
       if (decodedToken) {
         // If token is valid, set loggedIn to true
         res.locals.loggedIn = true;
+        console.log('server.js User is logged in');
       }
     } catch (error) {
-      // If token is invalid, clear cookie and set loggedIn to false
-      console.error('Error verifying JWT token:', error);
+      // If token is invalid, clear cookie and log error
+      console.error('server.js Error verifying JWT token:', error);
       res.clearCookie('jwt');
-      res.locals.loggedIn = false;
     }
   } else {
-    // If req.cookies or req.cookies.jwt doesn't exist, set loggedIn to false
-    res.locals.loggedIn = false;
+    console.log('server.js No JWT token found');
   }
+  
+  // Log the value of loggedIn
+  console.log('server.js Value of loggedIn:', res.locals.loggedIn);
+
+  // Call next middleware
   next();
 });
+
+
+
 
 /* ***********************
  * View Engine and templates
@@ -101,30 +114,28 @@ app.use("/account", registerAccount);
 //app.use("/inv/add-classification", addClassification);
 //app.use("/inv/add-inventory", addInventoryItem);
 
-
-// Error handling middleware
+// Combined error handling middleware
 app.use(async (err, req, res, next) => {
   let nav = await utilities.getNav();
   console.error(`Error at: "${req.originalUrl}": ${err.message}`);
+  if (err.status === 404) {
+    message = err.message;
+  } else {
+    message = 'Oh no! There was a crash. Maybe try a different route?';
+  }
   res.render("errors/error", {
     title: err.status || 'Server Error',
-    message: err.message,
+    message,
     nav
   });
-});
-
-
-// File Not Found Route - must be last route in list
-app.use(async (req, res, next) => {
-  next({status: 500, message: "This is awkward! You've found an error!"})
 });
 
 /* ***********************
  * Local Server Information
 * Values from .env (environment) file
  *************************/
-const port = process.env.PORT
-const host = process.env.HOST
+const port = process.env.PORT;
+const host = process.env.HOST;
 
 /* ***********************
  * Log statement to confirm server operation

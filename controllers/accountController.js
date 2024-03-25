@@ -92,9 +92,7 @@ try {
 /* ****************************************
  *  Process login request
  * ************************************ */
-/* ****************************************
- *  Process login request
- * ************************************ */
+
 const accountLogin = async (req, res) => {
   console.log("Inside accountLogin function");
 
@@ -131,7 +129,7 @@ const accountLogin = async (req, res) => {
 
       // Set the loggedIn flag in locals to true
       res.locals.loggedIn = true;
-
+      console.log('accountController says its loggedIn:', res.locals.loggedIn);
       return res.redirect("/account/account-management");
     } else {
       console.log("Incorrect password");
