@@ -49,40 +49,9 @@ app.use(function(req, res, next){
 //Parsing
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
+app.use(cookieParser())
+app.use(utilities.checkJWTToken)
 
-//Middleware to check if user is logged in
-app.use((req, res, next) => {
-  // Initialize loggedIn as false
-  res.locals.loggedIn = false;
-
-  // Log that the middleware is being executed
-  console.log('Middleware to check if user is logged in is being executed from server.js');
-
-  // Check if req.cookies exists and if req.cookies.jwt is truthy
-  if (req.cookies && req.cookies.jwt) {
-    try {
-      // Verify JWT token
-      const decodedToken = jwt.verify(req.cookies.jwt, process.env.ACCESS_TOKEN_SECRET);
-      if (decodedToken) {
-        // If token is valid, set loggedIn to true
-        res.locals.loggedIn = true;
-        console.log('server.js User is logged in');
-      }
-    } catch (error) {
-      // If token is invalid, clear cookie and log error
-      console.error('server.js Error verifying JWT token:', error);
-      res.clearCookie('jwt');
-    }
-  } else {
-    console.log('server.js No JWT token found');
-  }
-  
-  // Log the value of loggedIn
-  console.log('server.js Value of loggedIn:', res.locals.loggedIn);
-
-  // Call next middleware
-  next();
-});
 
 
 
@@ -109,8 +78,8 @@ app.get("/", baseController.buildHome)
 app.use("/inv", inventoryRoute);
 
 // Account routes
-app.use("/account", require("./routes/accountRoute"));
-app.use("/account", registerAccount); 
+//app.use("/account", require("./routes/accountRoute"));
+app.use("/account", accountRoute); 
 //app.use("/inv/add-classification", addClassification);
 //app.use("/inv/add-inventory", addInventoryItem);
 

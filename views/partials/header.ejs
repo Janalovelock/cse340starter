@@ -3,11 +3,12 @@
     <a href="/" title="Return to home page">CSE Motors</a>
   </span>
   <div id="tools">
-    <%# if (loggedIn) { %> <!-- Check if user is logged in -->
-      <a title="Account Details" href="/account/account-management">My Account</a>
-      <a title="Click to log out" href="/account/logout">Logout</a>
-    <%# } else { %>
-      <a title="Click to log in" href="/account/login">Login</a>
-    <%# } %>
+    <% if (locals.loggedin) { %>
+      <a class="underline-hover" title="Click to homepage" href="/account/">Welcome <%- locals.accountData.account_firstname %> </a>
+      <a class="underline-hover" title="Click to log out" href="/account/logout">Logout</a>
+    <% } else { %>
+      <a class="underline-hover" title="Click to log in" href="/account/login">My Account</a>
+    <% }%> <br>
+
   </div>
 </header>

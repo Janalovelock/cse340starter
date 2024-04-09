@@ -1,6 +1,29 @@
 <% if (title) { %>
-    <h1><%= title %></h1>
-    <%- messages() %>
+    <h1 class="margin-left"><%= title %></h1>
+<% } else {
+    res.redirect('/')
+} %>
 
-   <h1>You're logged in!</h1>
+<%- messages() %>
+<% if (errors) { %>
+    <ul class="notice">
+    <% errors.array().forEach(error => { %>
+        <li><%= error.msg %></li>
+    <%  }) %>
+    </ul>
 <% } %>
+
+
+<div class="margin-left">
+    <h2>Welcome <%- username %> </h2>
+    <p>You're logged in</p>
+    <a class="underline-hover" href="/account/update/<%= locals.accountData.account_id%>">Edit account information</a>
+    <br><br>
+
+    <% if (locals.accountData.account_type == 'Employee' || locals.accountData.account_type == 'Admin') { %>
+        <h2>Inventory Management</h2>
+        <a class="underline-hover" href="/inv">Manage Inventory</a>
+    <% } %>
+
+    <br><br>
+</div>

@@ -3,6 +3,7 @@ const accountModel = require("../models/account-model");
 const bcrypt = require("bcryptjs")
 const jwt = require("jsonwebtoken")
 require("dotenv").config()
+const { getAccountById } = require("../models/account-model");
 
 /* ****************************************
 *  Deliver login view
@@ -34,15 +35,35 @@ async function buildRegister(req, res, next) {
 * *************************************** */
 
 async function buildAccountManagement(req, res, next) {
-  let nav = await utilities.getNav()
+  let nav = await utilities.getNav();
+  const username = res.locals.accountData.account_firstname
   res.render("account/account-management", {
-    title: "Account Management",
-    nav,
-    errors: null,
-
+      title: "Account Management",
+      nav,
+      username,
+      errors: null,
   })
 }
+/* ****************************************
+*  Deliver account management page
+* *************************************** */
 
+async function buildUpdateAccount(req, res, next) {
+  console.log("URL Parameters:", req.params); // Add this line to see all URL parameters
+  const account_id = parseInt(req.params.account_id);
+  console.log("Parsed Account ID:", account_id); // Add this line to see the parsed account ID
+  const data = await accountModel.getAccountById(account_id);
+  let nav = await utilities.getNav();
+  res.render("account/update", {
+      title: "Edit Account",
+      nav,
+      errors: null,
+      account_firstname: data.account_firstname,
+      account_lastname: data.account_lastname,
+      account_email: data.account_email,
+      account_id: data.account_id,
+  })
+}
 /* ****************************************
 *  Process Registration
 * *************************************** */
@@ -93,53 +114,72 @@ try {
  *  Process login request
  * ************************************ */
 
-const accountLogin = async (req, res) => {
-  console.log("Inside accountLogin function");
-
-  const { account_email, account_password } = req.body;
-
+async function accountLogin(req, res) {
+  let nav = await utilities.getNav()
+  const { account_email, account_password } = req.body
+  const accountData = await accountModel.getAccountByEmail(account_email)
+  if (!accountData) {
+      req.flash("notice", "Please check your credentials and try again.")
+      res.status(400).render("account/login", {
+          title: "Login",
+          nav,
+          errors: null,
+          account_email,
+      })
+      return
+  }
   try {
-    const accountData = await accountModel.getAccountByEmail(account_email);
-    console.log("Retrieved accountData:", accountData);
-    if (!accountData) {
-      console.log("No account found");
-      req.flash("notice", "Please check your credentials and try again.");
-      return res.redirect("/account/login");
-    }
-
-    const isPasswordValid = await bcrypt.compare(account_password, accountData.account_password);
-
-    if (isPasswordValid) {
-      console.log("Password is correct");
-
-      // Include user's role in the JWT token payload
-      const token = jwt.sign(
-        { 
-          account_email: accountData.account_email, 
-          account_type: accountData.account_type,
-          // Assuming account_type represents the user's role
-        },
-        process.env.ACCESS_TOKEN_SECRET,
-        { expiresIn: '1h' }
-      );
-      console.log("Generated token:", token);
-
-      res.cookie('jwt', token, { httpOnly: true });
-      console.log("JWT cookie set successfully.");
-
-      // Set the loggedIn flag in locals to true
-      res.locals.loggedIn = true;
-      console.log('accountController says its loggedIn:', res.locals.loggedIn);
-      return res.redirect("/account/account-management");
-    } else {
-      console.log("Incorrect password");
-      req.flash("notice", "Please check your credentials and try again.");
-      return res.redirect("/account/login");
-    }
+      if (await bcrypt.compare(account_password, accountData.account_password)) {
+          delete accountData.account_password
+          console.log("Before signing jwt:", accountData); // Add this line
+          const accessToken = jwt.sign(accountData, process.env.ACCESS_TOKEN_SECRET, { expiresIn: 3600 * 1000 })
+          console.log("After signing jwt:", accessToken); // Add this line
+          if(process.env.NODE_ENV === 'development') {
+              res.cookie("jwt", accessToken, { httpOnly: true, maxAge: 3600 * 1000 })
+          } else {
+              res.cookie("jwt", accessToken, { httpOnly: true, secure: true, maxAge: 3600 * 1000 })
+          }
+          return res.redirect("/account/")
+      }
   } catch (error) {
-    console.error("Error in accountLogin:", error);
-    req.flash("error", "An error occurred. Please try again later.");
-    return res.redirect("/account/login");
+      console.error("Error while generating jwt:", error); // Add this line
+      return new Error('Access Forbidden')
+  }
+}
+
+
+/* ****************************************
+ *  update account
+ * ************************************ */
+async function updateAccountForm(req, res, next) {
+  try {
+    // Extract accountId from request parameters
+    const accountId = req.params.accountId;
+
+    console.log("Account ID:", accountId); // Add this line
+
+    // Assuming you have a function to fetch account data by accountId
+    const accountData = await accountModel.getAccountById(accountId);
+
+    console.log("Account Data:", accountData); // Add this line
+
+    // Check if accountData exists
+    if (!accountData) {
+      // Handle case where account data is not found
+      console.log("Account data not found"); // Add this line
+      return res.status(404).send("Account not found");
+    }
+
+    // Render the update account information form with account data
+    res.render("account/update-account", {
+      title: "Update Account Information",
+      accountData: accountData, // Pass accountData to the view
+      errors: null,
+      account_firstname: accountData.account_firstname, // Pass account_firstname to the view
+    });
+  } catch (error) {
+    console.error("Error rendering update account form:", error);
+    next(error);
   }
 }
 
@@ -156,4 +196,4 @@ async function logout(req, res) {
 
 
 
-  module.exports = { buildLogin, buildRegister, registerAccount, accountLogin, buildAccountManagement, logout}
+  module.exports = {getAccountById, buildUpdateAccount, updateAccountForm, buildLogin, buildRegister, registerAccount, accountLogin, buildAccountManagement, logout}

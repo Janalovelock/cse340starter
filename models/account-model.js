@@ -2,6 +2,27 @@ const pool = require("../database/")
 
 
 /* *****************************
+* Return account data using account ID
+* ***************************** */
+async function getAccountById(accountId) {
+  try {
+    console.log("Fetching account by ID:", accountId); // Add this line
+
+    const result = await pool.query(
+      'SELECT account_id, account_firstname, account_lastname, account_email, account_type FROM account WHERE account_id = $1',
+      [accountId]
+    );
+
+    console.log("Query Result:", result); // Add this line
+
+    return result.rows[0];
+  } catch (error) {
+    console.error("Error fetching account by ID:", error);
+    throw error;
+  }
+}
+
+/* *****************************
 *   Register new account
 * *************************** */
 async function registerAccount(account_firstname, account_lastname, account_email, account_password){
@@ -42,4 +63,4 @@ async function getAccountByEmail (account_email) {
   }
 }
 
-  module.exports = {registerAccount, checkExistingEmail, getAccountByEmail};
+  module.exports = {getAccountById, registerAccount, checkExistingEmail, getAccountByEmail};

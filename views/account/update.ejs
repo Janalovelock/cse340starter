@@ -1,0 +1,41 @@
+<% if (title) { %>
+    <h1 class="margin-left"><%= title %></h1>
+<% } else {
+    res.redirect('/')
+} %>
+
+<%- messages() %>
+<% if (errors) { %>
+    <ul class="notice">
+    <% errors.array().forEach(error => { %>
+        <li><%= error.msg %></li>
+    <%  }) %>
+    </ul>
+<% } %>
+
+<form class="updateForm" action="/account/update/" method="post">
+    <label for="account_firstname">First Name</label>
+    <input type="text" name="account_firstname" id="account_firstname" required value="<%= account_firstname %>">
+    <label for="account_lastname">Last Name</label>
+    <input type="text" name="account_lastname" id="account_lastname" required value="<%= account_lastname %>">
+    <label for="account_email">Email Address</label>
+    <input type="email" name="account_email" id="account_email" required value="<%= account_email %>">
+    <button type="submit" disabled>UPDATE</button>
+    <input type="hidden" name="account_id" value="<%= account_id %>">
+</form>
+
+<form action="/account/update/password" method="post">
+    <div class="margin-left">
+        <h2>Update Password</h2>
+        <span>Passwords must be at least 12 characters and contain at least 1 number, 1 capital letter and 1 special character</span><br>
+        <i>*note your original password will be changed</i><br>
+        <label for="account_password">Password</label>
+        <input type="password" name="account_password" id="account_password" required pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{12,}$">
+        <i>Passwords must be minimum of 12 characters and include 1 capital letter, 1 number and 1 special character</i>
+        <span id="pswdBtn">Show Password</span>
+        <button type="submit">Change Password</button>
+        <input type="hidden" name="account_id" value="<%= account_id %>">
+    </div>
+</form>
+
+<script src="/../js/inv-update.js"></script>

@@ -13,14 +13,14 @@ router.get("/getInventory/:classification_id", utilities.handleErrors(invControl
 router.use(utilities.checkLogin);
 
 // The following require an admin or employee account to complete
-router.get("/", utilities.handleErrors(invController.renderManagement));
-router.get("/add-classification", utilities.handleErrors(invController.renderAddClassification));
+router.get("/", utilities.checkAccountType, utilities.handleErrors(invController.renderManagement));
+router.get("/add-classification", utilities.checkAccountType, utilities.handleErrors(invController.renderAddClassification));
 router.post('/add-classification', utilities.handleErrors(invController.addClassification));
-router.get('/add-inventory', utilities.handleErrors(invController.renderAddInventory));
+router.get('/add-inventory', utilities.checkAccountType, utilities.handleErrors(invController.renderAddInventory));
 router.post('/add-inventory', utilities.handleErrors(invController.addInventoryItem));
 router.post("/update/", utilities.handleErrors(invController.updateInventoryItem));
-router.get('/edit/:invId', utilities.handleErrors(invController.renderEditInventory));
-router.get('/delete/:invId', utilities.handleErrors(invController.renderDeleteInventory));
+router.get('/edit/:invId',utilities.checkAccountType, utilities.handleErrors(invController.renderEditInventory));
+router.get('/delete/:invId', utilities.checkAccountType, utilities.handleErrors(invController.renderDeleteInventory));
 router.post("/delete/:invId", utilities.handleErrors(invController.deleteInventoryItem));
 
 module.exports = router;

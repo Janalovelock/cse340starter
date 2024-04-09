@@ -120,19 +120,48 @@ Util.handleErrors = fn => (req, res, next) => {
     });
 };
 /* ****************************************
+* Middleware to check token validity
+**************************************** */
+Util.checkJWTToken = (req, res, next) => {
+  if (req.cookies.jwt) {
+    jwt.verify(
+    req.cookies.jwt,
+    process.env.ACCESS_TOKEN_SECRET,
+    function (err, accountData) {
+      if (err) {
+        req.flash("Please log in")
+        res.clearCookie("jwt")
+        return res.redirect("/account/login")
+      }
+      res.locals.accountData = accountData
+      res.locals.loggedin = 1
+      next()
+    })
+  } else {
+    next()
+  }
+}
+/* ****************************************
  *  Check Login Middleware
  * ************************************ */
 Util.checkLogin = (req, res, next) => {
-  console.log("Inside checkLogin middleware");
-  
-  if (res.locals.loggedIn) {
-    console.log("index.js says User is logged in");
-    next();
+  if (res.locals.loggedin) {
+    next()
   } else {
-    console.log("index.js says User is not logged in");
-    req.flash("notice", "Please log in.");
-    return res.redirect("/account/login");
+    req.flash("notice", "Please log in.")
+    return res.redirect("/account/login")
   }
-};
-
+}
+/* ****************************************
+ *  Check account type
+ * ************************************ */
+Util.checkAccountType = (req, res, next) => {
+  const accountType = res.locals.accountData.account_type
+  if (accountType == 'Admin' || accountType == 'Employee') {
+    next()
+  } else {
+    req.flash("notice", "Please log in with an admin account")
+    return res.redirect("/account/login")
+  }
+}
 module.exports = Util;
