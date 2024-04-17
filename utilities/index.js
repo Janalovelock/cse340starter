@@ -70,7 +70,7 @@ Util.buildClassificationGrid = async function (data) {
         " " +
         vehicle.inv_model +
         ' on CSE Motors"></a>';
-      grid += "<hr>";
+
       grid += "</li>";
     });
     grid += "</ul>";

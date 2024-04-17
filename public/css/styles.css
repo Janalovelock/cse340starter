@@ -7,11 +7,11 @@
 }
 
 :root {
-  --primary-color: 50, 94, 84; 
-  --secondary-color: 218, 252, 114; 
-  --tertiary-color: 255, 111, 0;
+  --primary-color: 44, 54, 63; 
+  --secondary-color: 214, 219, 210; 
+  --tertiary-color: 214, 219, 210;
   --accent-color: white;
-  --accent-color-2: 255, 196, 230;
+  --accent-color-2: 60, 137, 109;
   --title-font: "Oswald", sans-serif;
   --title-weight: 400;
   --body-font: "Playfair Display", serif;
@@ -45,7 +45,7 @@ header{
 
 }
 #tools a{
-  color: #944000; 
+  color: rgb(var(--accent-color-2)); 
 }
 
  h1, h2, h3{
@@ -69,7 +69,7 @@ li{
   font-family: var(--body-font);
 }
 nav a, nav a:link, nav a:visited, nav a:hover, nav a:active {
-  color: rgb(var(--accent-color-2))
+  color: rgb(var(--tertiary-color))
 }
 input:required:invalid, input:focus:invalid {
   background-color: rgba(255, 0, 0, 0.16);
@@ -99,8 +99,8 @@ nav ul{
   padding: 0px;
 }
 button{
-  background-color: rgb(var(--accent-color-2));
-  color: rgb(var(--primary-color));
+  background-color: rgb(var(--secondary-color));
+  color: rgb(var(--accent-color-2));
   border-radius: 5px; 
   padding: 1rem;
   border: none;
@@ -109,7 +109,9 @@ button{
 .footer{
   padding: 1rem;
 }
-
+.car-details ul{
+  color: rgb(var(--accent-color-2))
+}
 .error-message{
   color:red;
   font-weight: bold;
@@ -117,9 +119,12 @@ button{
   border: 5px solid red;
   border-radius: 5px;
 }
+span{
+  padding: 1rem; 
+}
 
 .hero-index{
-  background-image: url(/images/vehicles/delorean.jpg);
+  background-image: url(/images/vehicles/delorean-dmc-12-back-to-the-future-hollywood-movie-dmc-12.jpg);
   background-size: contain;
   color: rgb(var(--tertiary-color));
   background-repeat: no-repeat;
@@ -149,7 +154,7 @@ button{
   max-width: 80%;
   padding: 1rem;
   margin: 1rem auto 1rem auto;
-  box-shadow: 10px 10px 10px 0px rgba(232,180,180,0.75);
+  box-shadow: 10px 10px 10px 0px rgba(var(--accent-color-2), 0.75);
   border-radius:10px;
   text-align: center;
 }
@@ -173,6 +178,20 @@ button{
   padding: 1rem; 
 
 }
+#inv-display li{
+  border: 2px solid rgb(var(--accent-color-2)); 
+  border-radius: 5px;
+  max-width: 50%;
+  margin: 1rem auto 1rem auto;
+  min-width: fit-content;
+  display: grid; 
+  justify-content: center;
+}
+#inv-display img{
+  box-shadow: 5px 5px 5px 0px rgba(var(--accent-color-2), 0.75);
+
+}
+
 
 .detail{
   background-color: rgb(var(--tertiary-color));
