@@ -12,6 +12,7 @@
   --tertiary-color: 214, 219, 210;
   --accent-color: white;
   --accent-color-2: 60, 137, 109;
+  --accent-color-3: 38, 136, 193;
   --title-font: "Oswald", sans-serif;
   --title-weight: 400;
   --body-font: "Playfair Display", serif;
@@ -184,12 +185,16 @@ span{
   max-width: 50%;
   margin: 1rem auto 1rem auto;
   min-width: fit-content;
-  display: grid; 
+  display: grid;
+  grid-template-columns: 1fr 1fr; 
   justify-content: center;
 }
 #inv-display img{
   box-shadow: 5px 5px 5px 0px rgba(var(--accent-color-2), 0.75);
 
+}
+#inv-display a, #inv-display a:link, #inv-display a:visited, #inv-display a:hover, #inv-display a:active {
+  color: rgb(var(--accent-color-3))
 }
 
 
